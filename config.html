@@ -1,0 +1,467 @@
+<!--
+ * Copyright (C) 2010-2016 Toshihiro Takasu (takasu.biz@gmail.com)
+ * 
+ * This file is part of Force.com LOGINS.
+ * 
+ * Force.com LOGINS can not be copied and/or distributed without the express
+ * permission of Toshihiro Takasu
+ -->
+
+<html>
+<head>
+<meta charset="UTF-8">
+<!--
+/* Google Drive Backup */
+<script charset="utf-8" type="text/javascript" src="https://apis.google.com/js/client:plusone.js"></script>
+-->
+<script charset="utf-8" type="text/javascript" src="js/jquery-2.1.4.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/bootstrap.min.js"></script>
+<script charset="utf-8" type="text/javascript" charset="utf-8" src="js/blowfish.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/buy.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/util.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/dao.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/config.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/payment.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/drive.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/main.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/account.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/group.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/imexport.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/bootstrap-theme.css" />
+<style>
+	td{
+		padding:3px;
+	}
+	
+	.desc{
+		padding:10px 0 20px 0;
+	}
+	th{
+		font-weight:normal;
+		width:300px;
+	}
+	.warningSpan{
+		color:red;
+	}
+	.textareaInModal{
+		width:100%;
+		height:130px;
+		margin-top:10px;
+		margin-bottom:10px;
+	}
+	.tab-desc{
+		margin-top:20px;
+		margin-bottom:20px;
+		font-size:16px;
+	}
+	.modal-body{
+		font-size:16px;
+	}
+</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Force.com LOGINS Options</h1>
+
+		<!-- Tabs -->
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#tab1" data-toggle="tab">General</a></li>
+			<li><a href="#tab2" data-toggle="tab">Chrome Sync</a></li>
+			<!--
+			/* Google Drive Backup */
+			<li><a href="#tab3" data-toggle="tab">Google Drive Backup</a></li>
+			-->
+			<li><a href="#tab3" data-toggle="tab">License</a></li>
+		</ul>
+
+		<div id="myTabContent" class="tab-content">
+			<div class="tab-pane fade in active" id="tab1">
+				<h2>Behaviors</h2>
+				<p class="tab-desc">
+					You can customize extension behaviors.
+				</p>
+				<table class="table">
+					<tr class="sect">
+						<th>Language</th>
+						<td>
+						<select size="1" id="langSelect">
+							<option value="">Auto (locale)</option>
+							<option value="jpn">Japanese</option>
+							<option value="eng">English</option>
+						</select>
+						</td>
+						<td>
+							<p>
+								Defaults to auto set depending on your OS locale.
+							</p>
+						</td>
+					</tr>
+					<tr class="sect">
+						<th>Default group name</th>
+						<td>
+						<input type="text" id="defGrpName" maxlength="30"/>
+						</td>
+						<td>
+							<p>
+								Change default group name "General" to whatever you want.
+							</p>
+						</td>
+					</tr>
+					<tr class="sect">
+						<th>Forget the account you most recently accessed</th>
+						<td>
+						<input type="checkbox" id="forgetPrevAccount"/>
+						</td>
+						<td>
+							<p>
+							The extension remembers the last account you accessed and color it in pink for your quick re-access.
+							Check if you don't want extension to remember it.
+							</p>
+						</td>
+					</tr>
+					<tr class="sect">
+						<th>Start up with recently used accounts</th>
+						<td>
+						<input type="number" min="0" id="numOfRecentlyUsedAccount" style="width:50px;"/>
+						</td>
+						<td>
+							<p>
+							Set number of recently used account to show on start up.
+							Set "0" to show all the accounts on start up.
+							</p>
+						</td>
+					</tr>
+					<tr class="sect">
+						<th>Account display order</th>
+						<td>
+							<select size="1" id="accountDisplayOrder">
+								<option value="default">Default</option>
+								<option value="login_desc">Last login time DESC</option>
+								<option value="username_asc">Username ASC</option>
+								<option value="username_desc">Username DESC</option>
+								<option value="updatedtime_asc">Last updated time ASC</option>
+								<option value="updatedtime_desc">Last updated time DESC</option>
+							</select>
+						</td>
+						<td>
+							<p>
+							Set in what order you want accounts to be displayed. By default, accounts are displayed in order of creation.
+							</p>
+						</td>
+					</tr>
+					<tr class="sect">
+						<th>Auto-backup for chrome sync </th>
+						<td>
+						<input type="number" min="0" id="numOfAutoBackup" style="width:50px;"/>
+						</td>
+						<td>
+							<p>
+							This option is to automatically take backup everytime your local data gets synced.<br/>
+							Set number of maximum backup you wish to automatically take before sync.<br/>
+							Set "0" to disable automatic backup for chrome sync.<br/>
+							Please note that local data gets automatically synced everytime you open the extension.<br/>
+							Backup data is accessible from Import / Export window.
+							</p>
+						</td>
+					</tr>
+				</table>
+				<hr/>
+				<h2>Encryption</h2>
+				<p class="tab-desc">
+					By enabling encryption you can encrypt the SFDC password stored in the localStorage.<br/>
+					Enabling encryption <strong>does not mean your data is completely secure</strong>. You need to physically limit the browser access only to you for better protection.<br/>
+					Changing encryption setting will delete all the data and force you to import the data back in.<br/>
+					Please make sure <strong>you have exported the data before changing the encryption setting.</strong>
+				</p>
+				<table class="table">
+					<tr>
+						<th>Encryption</th>
+						<td>
+						<input type="checkbox" id="encryption"/>
+						</td>
+						<td>
+							<p>Check if you want to encrypt login information.</p>
+						</td>
+					</tr>
+					<tr>
+						<th>Encryption key</th>
+						<td>
+						<input type="password" id="encryptionKey"/>
+						</td>
+						<td>
+							<p>
+							Enter encryption key. 
+							To change your key, disable encryption and enable it again.
+							</p>
+						</td>
+					</tr>
+				</table>
+				<br/>
+				<div id="msg" class="alert alert-success" style="display:none;">Configuration setting is successfully saved!</div>
+
+				<button type="button" class="btn btn-primary" id="configSaveButton">Save</button>
+				<button type="button" class="btn btn-default" id="configCloseButton">Close</button>
+				<br/><br/>
+				<input type="checkbox" id="debugMode"/> Debug Mode
+				
+				<br/><br/>
+			</div>
+
+			<!-- Chrome Sync Tab -->
+			<div class="tab-pane fade" id="tab2">
+				<h2>Chrome Sync</h2>
+				<p class="tab-desc">
+					Chrome Sync option will sync credential and config data between Chrome browsers on multiple devices.<br/><br/>
+
+					The google api only provides you about <b>8k bytes</b> of quota for sync data, so this option is for those of you who do not have many credentials registered, say <b>couple of groups and roughly about 30 accounts.</b><br/>
+					Once the extension detects your data is exceeding the quota, it automatically turns off the sync with notice pop up so you can try and see how far you can go.<br/>
+					<br/><br/>
+					
+					You first need to log in to your google account with browser itself (chrome://settings/) and configure it to sync extensions at chrome://settings/syncSetup.<br/>
+					<span class="warningSpan">
+						*It is generally not recommended that you include sensitive data in Chrome Sync. Please enable this option at your own risk.
+					</span>
+				</p>
+				<table class="table">
+					<tr>
+						<th>Your current data size in byte</th>
+						<td>
+							<span id="currentDataSize"></span>
+						</td>
+						<td>
+							Your data needs to be smaller than the sync-able data size limit of <span id="syncDataSizeLimit"></span> bytes set by Google.
+						</td>
+					</tr>
+					<tr>
+						<th>Enable</th>
+						<td>
+							<input type="checkbox" id="syncEnabled"/>
+						</td>
+						<td>
+							Check to enable sync.
+						</td>
+					</tr>
+					<tr>
+						<th>Force push data on enabling sync</th>
+						<td>
+							<input type="checkbox" id="forcePushFlag"/>
+						</td>
+						<td>
+							<p>
+							Check to push data stored with this extension, upon this configuration save, to overwrite data on your other Chrome browsers that are already in sync.
+							</p>
+						</td>
+					</tr>
+				</table>
+
+				<br/>
+				<div id="sync-save-msg" class="alert alert-success" style="display:none;">Sync setting is successfully saved!</div>
+				<button type="button" class="btn btn-primary" id="syncSaveButton">Save</button>
+				<button type="button" class="btn btn-default" id="syncCloseButton">Close</button>
+				<br/><br/>
+
+
+				<!-- Sync Save Back Up Modal -->
+				<div class="modal fade" id="syncSaveModal" tabindex="-1" role="dialog" aria-labelledby="syncSaveModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="syncSaveModalLabel">Saving Chrome Sync Setting</h4>
+				      </div>
+				      <div class="modal-body" id="saveSyncModal-body">
+				      	<span class="warningSpan">
+				      		There may be risk of losing all data stored with the extension running on this browser. <br/>
+				      		Please copy data in textarea below and paste to somewhere safe for your backup, before you proceed.
+				      	</span>
+				      	<textarea class="textareaInModal" id="exportTextarea"></textarea>
+				      	<button type="button" id="copyExportedData" class="btn btn-default" style="position:relative; margin-right:0px;">Copy to clipboard</button><br/><br/>
+				        Did you copy your data to your clipboard?
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-primary" id="dataIsSafeButton">Yes</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<!-- Sync Save Warning Modal (Sync down) -->
+				<div class="modal fade" id="syncDownWarningModal" tabindex="-1" role="dialog" aria-labelledby="syncSaveModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="syncSaveModalLabel">Saving Chrome Sync Setting</h4>
+				      </div>
+				      <div class="modal-body" id="saveSyncModal-body">
+				      	<span class="warningSpan">
+					      	Data already in sync is found as shown below.<br/>
+					      	You are about to overwrite your local data with the data in sync, which means you are losing all the data stored in this browser.<br/>
+				      	</span>
+				        <textarea class="textareaInModal" id="dataInSyncTextarea"></textarea>
+				        If you wish to overwrite the data in sync by your local data, cancel and try again with "Force push" option checked.<br/><br/>
+				        Are you sure you want to do this?
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				        <button type="button" class="btn btn-primary" id="syncDownButton">Yes</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<!-- Sync Save Warning Modal (Sync up) -->
+				<div class="modal fade" id="syncUpWarningModal" tabindex="-1" role="dialog" aria-labelledby="syncSaveModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="syncSaveModalLabel">Saving Chrome Sync Setting</h4>
+				      </div>
+				      <div class="modal-body" id="saveSyncModal-body">
+				      	There is no data in sync yet so data stored in this browser will be pushed for sync.<br/>
+				      	<span class="warningSpan">
+				      		If you have enabled sync option on other browsers before (probably very recently), and there supposed to be data already in sync, please wait for a while and try again.
+				      	</span><br/><br/>
+				        Are you sure you want to do this?
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				        <button type="button" class="btn btn-primary" id="syncUpButton">Yes</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+				<!-- Sync Save Warning Modal (Force push) -->
+				<div class="modal fade" id="syncForcePushWarningModal" tabindex="-1" role="dialog" aria-labelledby="syncSaveModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="syncSaveModalLabel">Saving Chrome Sync Setting</h4>
+				      </div>
+				      <div class="modal-body" id="saveSyncModal-body">
+				      	<span class="warningSpan">
+					      	Data already in sync is found as shown below.<br/>
+					      	You are about to force push your local data and overwrite the data already in sync.
+				      	</span>
+				      	<textarea class="textareaInModal" id="dataInSyncTextareaForForcePush"></textarea>
+				      	If you wish to overwrite your local data with the data in sync, cancel and try again with "Force push" option unchecked.<br/><br/>
+				        Are you sure you want to do this?
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				        <button type="button" class="btn btn-primary" id="syncForcePushButton">Yes</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+
+			<!-- Google Drive Backup Tab -->
+			<!--
+			/* Google Drive Backup */
+			<div class="tab-pane fade" id="tab3">
+				<h2>Google Drive Backup</h2>
+				<div class="tab-desc">
+					You can set automatic backup to your Google Drive.
+				</div>
+				<table class="table">
+					<tr>
+						<th>Enable Google Drive Backup</th>
+						<td>
+							<input type="checkbox" id="driveBackupEnabled"/>
+						</td>
+						<td>
+							<p>
+								Enable you to backup your data on Google Drive.<br/>
+								The "Force.com LOGINS Backup" folder will be automatically created under <a href="https://drive.google.com/drive/my-drive" target="_blank">My Drive</a>, and backup data will be stored in there.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th>Automatic backup</th>
+						<td>
+							<input type="checkbox" id="driveAutoBackupEnabled"/>
+						</td>
+						<td>
+							<p>
+								Check to automatically save your backup data when you create/update/import account or group data.
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th>Number of backup to keep</th>
+						<td>
+							<input type="number" min="0" id="numOfDriveAutoBackup" style="width:50px;" value="0"/>
+						</td>
+						<td>
+							<p>
+								Set number of backup you wish to keep on Google Drive.<br/>
+								If the number set got exceeded, the extension will delete the oldest backup.<br/>
+								Set 0 or negative value to set no limit - recommended setting.
+							</p>
+						</td>
+					</tr>
+				</table>
+
+				<br/>
+				<div id="drivebacup-save-msg" class="alert alert-success" style="display:none;">Google Drive Backup setting is successfully saved!</div>
+				<button type="button" class="btn btn-primary" id="driveBackupSaveButton">Save</button>
+				<button type="button" class="btn btn-default" id="driveBackupCloseButton">Close</button>
+			</div>
+			-->
+
+			<!-- Licenses Tab -->
+			<div class="tab-pane fade" id="tab3">
+				<h2>License</h2>
+				<div id="hasLicense" class="tab-desc" style="display:none;">
+					Thank you for purchasing license! <br/>
+					You can manage your license subscription at your Google <a target="_blank" href="https://payments.google.com/#subscriptionsAndServices">Subscriptions and Services</a> page.
+				</div>
+				<div id="noLicense" class="tab-desc" style="display:none;">
+					You do not have valid license yet and the extension is a free edition.<br/>
+					With free edition, you can manage up to <span id="maxAccountsForFreeSpan" style="font-weight:bold;"></span> accounts and have limited access to the configuration options.<br/>
+					You can purchase annual license to get access to the full functionalities.
+					<br/><br/>
+					Please visit <a target="_blank" href="http://forcecomlogins.jimdo.com/license/">here</a> for information about license price.
+					<br/><br/>
+					<button type="button" class="btn btn-primary" id="purchaseLicense">Purchase license with 7 days free trial</button><span style="margin-left:30px; top:10px; position:relative;">or <a href="#" id="activateWithCode">enter activation code (not for commercial)</a></span>
+				</div>
+
+				<!-- Enter Activation Code -->
+				<div class="modal fade" id="activateModal" tabindex="-1" role="dialog" aria-labelledby="activateModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="activateModalLabel">Activation</h4>
+				      </div>
+				      <div class="modal-body" id="activateModal-body">
+				      	Please register your activation code.<br/><br/>
+				      	<input type="text" id="activationCode" maxlength="6"/>
+				      </div>
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				        <button type="button" class="btn btn-primary" id="activateButton">Register</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="debug"></div>
+</body>
+
+<script type="text/javascript" src="js/config_onload.js"></script>
+<script type="text/javascript" src="js/payment_onload.js"></script>
+<!--
+/* Google Drive Backup */
+<script type="text/javascript" src="js/drive_onload.js"></script>
+-->
+
+</html>

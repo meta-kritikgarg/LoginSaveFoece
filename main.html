@@ -1,0 +1,335 @@
+<!--
+/*******************************************************
+ * Copyright (C) 2010-2016 Toshihiro Takasu (takasu.biz@gmail.com)
+ *
+ * This file is part of Force.com LOGINS.
+ *
+ * Force.com LOGINS can not be copied and/or distributed without the express
+ * permission of Toshihiro Takasu
+ *******************************************************/
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<!--
+/* Google Drive Backup */
+<script charset="utf-8" type="text/javascript" src="https://apis.google.com/js/client_plusone.js" id="client_js"></script>
+-->
+<script charset="utf-8" type="text/javascript" src="js/blowfish.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/jquery-2.1.4.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/jquery-ui-1.11.4.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/buy.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/util.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/dao.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/config.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/transaction.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/payment.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/drive.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/main.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/account.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/group.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/imexport.js"></script>
+<script charset="utf-8" type="text/javascript" src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/common.css" />
+<link rel="stylesheet" href="css/template.css" />
+<link rel="stylesheet" href="css/jquery-ui.css" />
+</head>
+
+<body id="body">
+	<div class="container">
+
+	<div id="disableAllDiv" class="disableAllDiv" style="display:none;"></div>
+	<div id="disableAllForSyncDiv" class="disableAllDiv" style="display:none;"></div>
+
+	<header id="header">
+		<div style="position:relative; top:-4px;">
+			<span id="licenseStatus" class="optionStatus">LICENSE</span><span class="optionStatus"> | </span> 
+			<span id="syncStatus" class="optionStatus">SYNC</span><span class="optionStatus"> | </span>
+			<span id="encryptStatus" class="optionStatus">ENCRYPT</span>
+			<!--
+			/* Google Drive Backup */
+			<br/><span id="gdriveBackupStatus" class="optionStatus">AUTO BACKUP</span>
+			-->
+		</div>
+		<nav>
+			<a id="addNewAccountHref" class="btn-grp-left">
+				<span name="eng">Add account</span>
+			</a>
+			<a id="importWizardHref"  class="btn-grp-center">
+					<span name="eng">Import / Export</span>
+			</a>
+			<a id="configHref"  class="btn-grp-right" >
+					<span name="eng">Option</span>
+			</a>
+		</nav>
+	</header>
+
+	<form name="form">
+
+		<!-- /errorDiv -->
+		<section id="errorDiv" class="popupDiv" style="display:none; z-index:100!important;">
+			<h1>
+				<span name="eng">Error</span>
+			</h1>
+			<hr />
+			<p id="errormsg"></p>
+			<nav>
+	  			<input id="closeErrorButton" type="button" value="OK" class="btn-basic" />
+	    </nav>
+		</section>
+		<!-- /errorDiv -->
+
+		<!-- /noticeDiv -->
+		<section id="noticeDiv" class="popupDiv" style="display:none; z-index:100!important;">
+			<h1><span name="eng">Notice</span></h1>
+			<hr />
+			<p id="noticemsg"></p>
+			<nav>
+	  			<input id="closeNoticeButton" type="button" value="OK" class="btn-basic" />
+	    	</nav>
+		</section>
+		<!-- /noticeDiv -->
+
+		<!-- /successDiv -->
+		<section id="successDiv" class="popupDiv" style="display:none; z-index:100!important;">
+			<h1><span name="eng">Success</span></h1>
+			<hr />
+			<div id="successmsg"></div>
+			<nav>
+		  		<input id="closeSuccessButton" type="button" value="OK" class="btn-basic" />
+		    </nav>
+		</section>
+		<!-- /successDiv -->
+
+		<!-- /warningDiv -->
+		<section id="warningDiv" class="popupDiv" style="display:none; z-index:99!important;">
+			<h1><span name="eng">Warning</span></h1>
+			<hr />
+			<p id="warningmsg"></p>
+			<nav>
+		  		<input id="warningNoButton" type="button" value="No" class="btn-basic" />
+		  		<input id="warningYesButton" type="button" value="Yes" class="btn-basic" />
+	    	</nav>
+	    	<input type="hidden" value="" id="warningDialogParam1" />
+	  		<input type="hidden" value="" id="warningDialogParam2" />
+	  		<input type="hidden" value="" id="warningDialogParam3" />
+		</section>
+		<!-- /warningDiv -->
+
+
+		<!-- /imexportDiv -->
+		<section id="imexportDiv" class="popupDiv" style="display:none;top:60px;">
+			<div id="imexportDisable" class="disableModalDiv" style="display:none;"></div>
+			<h1><span name="eng">Import / Export</span></h1>
+			<hr />
+			<div id="backupSelectDiv" style="margin-bottom:10px;">
+				Backup:
+				<span id="backupSelectSpan">
+					<select name="backupSelect" id="backupSelect" style="width:150px;">
+						<option label="Current Data" value="CURRENT" />
+					</select>
+				</span>
+			</div>
+			<textarea id="xmlData"></textarea>
+			<nav>
+	  		<input id="importCancelButton" type="button" class="btn-basic" value="cancel"/>
+	  		<input id="deleteBackup" type="button" class="btn-basic" value="delete" style="display:none"/>
+	  		<input id="saveAsBackup" type="button" class="btn-basic" value="save as backup"/>
+	  		<input id="importInitializeButton" type="button" class="btn-basic" value="initialize"/>
+	  		<input id="importButton" type="button" class="btn-basic" value="import"/>
+			</nav>
+		</section>
+		<!-- /imexportDiv -->
+
+
+		<!-- /Common Div -->
+
+		<!-- importWarningDiv -->
+		<section id="backupSaveAsNameDiv" class="popupDiv" style="display:none;">
+			<h1><span name="eng">Save as ...</span></h1>
+			<hr />
+			<span name="eng">Title: </span>
+			<input type="text" id="backupName" name="backupName" />
+
+			<!--
+			<br/><br/>
+			/* Google Drive Backup */
+			<span name="eng">Save to: </span><span name="jpn">保存先: </span>
+
+			&nbsp;&nbsp;
+			<input type="radio" id="saveToLocal" name="saveTo" value="local" checked/>
+			<label for="saveToLocal">Local</label>
+			&nbsp;&nbsp;
+			<input type="radio" id="saveToGDrive" name="saveTo" value="gdrive"/>
+			<label for="saveToGDrive">Google Drive</label>
+			-->
+
+			<nav style="margin-top:10px;">
+			<input id="saveAsCancel" type="button"value="Cancel" class="btn-basic" />
+			<input id="saveAs" type="button" value="Save" class="btn-basic" />
+			</nav>
+		</section>
+		<!-- importWarningDiv -->
+
+		<div id="editDiv" style="display:none;">
+			<input type="hidden" id="sfdc_id" value=""/>
+		  	<table>
+		  		<tr id="groupTr" style="display:;">
+		  			<td><span name="eng">Group</span><span class="required">*</span></td>
+		  			<td id="grpTd">
+		  				<select name="grpSelect" id="grpSelect"></select>
+		  			</td>
+		  			<td style="width:35px;">
+		  				<input id="grpPopupButton" type="button" class="btn-basic" value="+"/>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td><span name="eng">Username</span><span class="required">*</span></td>
+		  			<td colspan="2"><input id="sfdc_username" type="text" value="" /></td>
+		  		</tr>
+		  		<tr>
+					<td><span name="eng">Password</span><span class="required">*</span></td>
+					<td><input id="sfdc_password" type="password" value="" /></td>
+					<td>
+						<span name="eng"><a id="showPasswordEngHref">show</a></span>
+					</td>
+		  		</tr>
+		  		<tr>
+		  			<td><span name="eng">Org Type</span><span class="required">*</span></td>
+		  			<td colspan="2">
+		  				<select name="orgType" id="orgType">
+		  					<option label="Sandbox" value="SANDBOX" />
+							<option label="Production / Dev" value="PROD"/>
+							<option label="PreRelease" value="PRE"/>
+							<option label="Other" value="OTHER"/>
+						</select>
+						<div id="orgTypeOtherDiv" style="margin-top:7px; display:none;">
+							<input type="text" id="orgTypeOther" value=""/>
+						</div>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td><span name="eng">Security Token</span></td>
+		  			<td colspan="2"><input id="sfdc_sectoken" type="text" value=""/></td>
+		  		</tr>
+		  		<tr>
+		  			<td><span name="eng">Landing Page</span></td>
+		  			<td colspan="2">
+		  				<select name="landingPage" id="landingPage" title="Select the page you want to be redirected to after successful login. Select 'Other' to specify your desired redirect url. (This feature is for licensed users)">
+		  					<option label="-" value="HOME" />
+		  					<option label="Report" value="REPORT" />
+		  					<option label="Dashboard" value="DASHBOARD" />
+		  					<option label="Chatter" value="CHATTER" />
+		  					<option label="Opportunity" value="OPPORTUNITY" />
+		  					<option label="Case" value="CASE" />
+		  					<option label="Setup" value="SETUP" />
+							<option label="User" value="USER"/>
+							<option label="Other" value="OTHER"/>
+						</select>
+						<div id="landingPageOtherDiv" style="margin-top:7px; display:none;">
+							<input type="text" id="landingPageOther" value="" placeholder="/sample/url-path"/>
+						</div>
+		  			</td>
+		  		</tr>
+		  		<tr>
+		  			<td><span name="eng">Description</span></td>
+		  			<td colspan="2"><textarea id="sfdc_description"></textarea></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+					<div style="float:left;" id="copyAccountInfoDiv">
+						<img src="img/clipboard.png" style="width:13px;"/>
+						<a id="copyAccountInfoHref" style="cursor:pointer; top:-2px; position:relative;" title="Copy account information to clipboard."><span name="eng">Account Info</span><span name="jpn">アカウント情報</span></a>
+						<textarea id="accountInfo" style="display:none; width:0px; height:0px; border:none; background-color: transparent;" cols="0" rows="0"></textarea>
+					</div>
+					<div style="float:left; margin-left:10px;" id="copyPwTokenDiv">
+						<img src="img/clipboard.png" style="width:13px;"/>
+						<a id="copyPwTokenHref" style="cursor:pointer; top:-2px; position:relative;" title="Copy password and security token to clipboard."><span name="eng">PW+Token</span><span name="jpn">PW+トークン</span></a>
+						<textarea id="pwToken" style="display:none; width:0px; height:0px; border:none; background-color: transparent;" cols="0" rows="0"></textarea>
+					</div>
+					<div style="width:100%; margin-top:10px; float:right; text-align:right;">
+		  				<input type="button" class="btn-basic" id="clearButton" value="cancel" />
+		  				<input type="button" class="btn-basic" id="saveButton" value="save" />
+		  				<input type="button" class="btn-basic" id="saveAsNewButton" value="save as new" style="display:none;"/>
+		  				<input type="button" class="btn-basic" id="updateButton" value="update" style="display:none;"/>
+		  				<input type="button" class="btn-basic" id="deleteButton" value="delete" style="display:none;" />
+					</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- /editDiv -->
+
+		<section id="addGroupDiv" class="popupDiv" style="display:none;">
+			<h1><span name="eng">Add group</span></h1>
+			<hr />
+			<table>
+	  		<tr id="newGroupTr">
+				<th><span name="eng">Group name</span></th>
+	  			<td><input id="newGrpName" type="text" value="" style="width:160px;"/></td>
+	  		</tr>
+			</table>
+			<p id="addGroupErrorDiv"></p>
+			<nav>
+				<input id="addGrpCancelButton" type="button" value="cancel" class="btn-basic" />
+				<input id="addGrpButton" type="button" value="save" class="btn-basic" />
+			</nav>
+		</section>
+		<!-- /addGroupDiv -->
+
+		<section id="enterEncryptionKeyDiv" class="popupDiv" style="display:none;">
+			<h1><span name="eng">Encryption key</span></h1>
+			<hr />
+			<input type="password" id="encriptionKeyInput" />
+			<nav><br/>
+	  		<input id="closeEncryptionKeyButton" type="button" value="cancel" class="btn-basic" />
+	  		<input id="enterEncryptionKeyButton" type="button" value="OK" class="btn-basic" />
+	    </nav>
+		</section>
+		<!-- /enterEncryptionKeyDiv -->
+
+		<section id="updateGroupDiv" class="popupDiv" style="display:none;">
+			<h1><span name="eng">Update group</span></h1>
+			<hr />
+			<table>
+	  		<tr id="updateGroupTr">
+				<th><span name="eng">Group name</span></th>
+	  			<td>
+	  				<input id="updateGrpName" type="text" value="" style="width:160px;"/>
+	  				<input id="updateGrpId" type="hidden" value=""/>
+	  			</td>
+	  		</tr>
+			</table>
+			<p id="updateGroupErrorDiv"></p>
+			<nav>
+				<input id="updateGrpCancelButton" type="button" value="cancel" class="btn-basic" />
+				<input id="updateGrpButton" type="button" value="update" class="btn-basic" />
+				<input id="deleteGrpButton" type="button" value="delete" class="btn-basic" />
+			</nav>
+		</section>
+		<!-- /updateGroupDiv -->
+
+		<div id="quickSearch">
+			<img src="img/find.png" style="width:16px; position:relative; top:-3px;"/>
+			<input type="text" value="" id="keyword" placeholder="Search username"/>
+			<p id="directLoginMsg"><span name="eng">Press ENTER to open tab, SHIFT+ENTER to open window.</span></p>
+			<input type="hidden" id="directJumpAccId" value=""/>
+		</div>
+
+		<div id="accountDiv" style="margin-bottom:50px;"></div>
+
+		<div id="debug"></div>
+
+	  <footer id="footer">
+	  	<!-- banners to be put here -->
+	  </footer>
+	</form>
+	</div>
+</body>
+
+<script type="text/javascript" src="js/main_onload.js"></script>
+<script type="text/javascript" src="js/payment_onload.js"></script>
+
+</html>
