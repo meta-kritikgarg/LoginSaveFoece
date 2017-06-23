@@ -5,8 +5,8 @@ body {
   height:400px;
   width:400px;
   padding:0 20px 0 10px;
-  font-family:'Helvetica','Arial','ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;
-  background-attachment:fixed;"
+  font-family:'Helvetica','Arial','Hiragino Kaku Gothic Pro','Meiryo','sans-serif';
+  background-attachment:fixed;
   font-size:12px;
   margin-left:1px;
 }
@@ -224,7 +224,7 @@ select {
   border-left:1px solid #DDD;
   border-top-right-radius:5px;
   border-bottom-right-radius:5px;
-  -webkit-mask-box-image: -webkit-linear-gradient(black, pink™);
+  -webkit-mask-box-image: -webkit-linear-gradient(black, pink);
 }
 /*
 .img-grp-center-selected{
@@ -472,6 +472,6 @@ footer img {
   position:relative; 
   top:12px; 
   font-size:9px; 
-  color:lightgray;"
+  color:lightgray;
 }
 
